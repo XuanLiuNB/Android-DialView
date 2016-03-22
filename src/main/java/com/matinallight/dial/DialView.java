@@ -2,6 +2,7 @@ package com.matinallight.dial;
 
 import android.content.Context;
 import android.os.CountDownTimer;
+import android.support.annotation.UiThread;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -11,10 +12,12 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * Created by MatinalLight .
  * 转盘选项卡
- *
  */
 public class DialView extends ViewGroup {
     private static final String TAG = DialView.class.getSimpleName();
@@ -30,7 +33,6 @@ public class DialView extends ViewGroup {
     private int centrePointY;
     private OnDialViewItemClickListener onDialViewItemClickListener;
     private double startAngle;
-//    private VelocityTracker mVelocityTracker;速率追踪器 还没想好怎么写
 
     public DialView(Context context) {
         super(context);
@@ -107,10 +109,8 @@ public class DialView extends ViewGroup {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-//        if (mVelocityTracker == null) {
-//            mVelocityTracker = VelocityTracker.obtain();
-//        }
-//        mVelocityTracker.addMovement(ev);
+        double startTime=System.currentTimeMillis();
+        double latestAngle;
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 evDownX = ev.getX();
@@ -120,32 +120,24 @@ public class DialView extends ViewGroup {
             case MotionEvent.ACTION_MOVE:
                 float evMoveNewX = ev.getX();
                 float evMoveNewY = ev.getY();
-                double latestAngle = getAngle(evMoveNewX, evMoveNewY);
+                latestAngle = getAngle(evMoveNewX, evMoveNewY);
                 if (latestAngle - startAngle > 5) {
                     rotationAngle += Math.toRadians(latestAngle - startAngle);
                     startAngle = getAngle(evMoveNewX, evMoveNewY);
                     requestLayout();
                 } else if (latestAngle - startAngle < -5) {
-                    rotationAngle += -Math.toRadians(startAngle - latestAngle);
+                    rotationAngle -= Math.toRadians(startAngle - latestAngle);
                     startAngle = getAngle(evMoveNewX, evMoveNewY);
                     requestLayout();
                 }
                 break;
             case MotionEvent.ACTION_UP:
-//                final VelocityTracker velocityTracker = mVelocityTracker;
-//                velocityTracker.computeCurrentVelocity(1000);
-//                int velocityX = (int) velocityTracker.getXVelocity();
-//                Log.e("Velocity X", "" + velocityX);
-//                int velocityY = (int) velocityTracker.getYVelocity();
-//                Log.e("Velocity Y", "" + velocityY);
-//                if (mVelocityTracker != null) {
-//                    mVelocityTracker.recycle();
-//                    mVelocityTracker = null;
-//                }
                 break;
         }
         return super.dispatchTouchEvent(ev);
     }
+
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
