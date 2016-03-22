@@ -56,7 +56,7 @@ public class DialView extends ViewGroup {
         width = width < height ? width : height;
         height = width;
         int count = adapter.getCount();
-        if (isFirstAdd) {
+        if (isFirstAdd) {//防止onMeasure多次调用 重复添加child
             View child;
             for (int i = 0; i < count; i++) {
                 final int position = i;
