@@ -30,7 +30,7 @@ public class DialView extends ViewGroup {
     private int centrePointY;
     private OnDialViewItemClickListener onDialViewItemClickListener;
     private double startAngle;
-//    private VelocityTracker mVelocityTracker;
+//    private VelocityTracker mVelocityTracker;速率追踪器 还没想好怎么写
 
     public DialView(Context context) {
         super(context);
@@ -74,14 +74,12 @@ public class DialView extends ViewGroup {
             }
             isFirstAdd = false;
         }
-//        Log.e(TAG, "onMeasure  count:" + count);
         setMeasuredDimension(width, height);
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int count = getChildCount();
-//        Log.e(TAG, "onLayout  count:" + count);
         double radian = Math.toRadians(360 / count);
         View child;
         int childWidth;
@@ -98,7 +96,7 @@ public class DialView extends ViewGroup {
             childWidth = child.getMeasuredWidth();
             childHeight = child.getMeasuredHeight();
             radius = (getMeasuredWidth() - childWidth) / 2;
-            childLeft = (int) (width - (width + childWidth) / 2 + radius * Math.sin(i * radian + rotationAngle));
+            childLeft = (int) (width - (width + childWidth) / 2 + radius * Math.sin(i * radian + rotationAngle));//相对父View的坐标，不是手机屏幕的坐标
             childTop = (int) (height - (height + childHeight) / 2 - radius * Math.cos(i * radian + rotationAngle));
             childRight = childLeft + childWidth;
             childBottom = childTop + childHeight;
@@ -162,8 +160,8 @@ public class DialView extends ViewGroup {
         double legX = evX - centrePointX;
         double legY = evY - centrePointY;
         double hypotenuse = Math.hypot(legX, legY);
-        double angle = Math.toDegrees(Math.asin(legX / hypotenuse));
-        if (legY > 0) {
+        double angle = Math.toDegrees(Math.asin(legX / hypotenuse));//与Y轴的夹角
+        if (legY > 0) {//Y坐标为负，说明与初始角度大于90°
             angle = 180 - angle;
         }
         return angle;
