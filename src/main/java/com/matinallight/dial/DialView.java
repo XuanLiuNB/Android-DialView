@@ -92,7 +92,7 @@ public class DialView extends ViewGroup {
         int childRight;
         int childBottom;
         centrePointX = r - width / 2;
-        centrePointY = b - height / 2;
+        centrePointY = height / 2;
         for (int i = 0; i < count; i++) {
             child = getChildAt(i);
             childWidth = child.getMeasuredWidth();
